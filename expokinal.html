@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel IoT</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .switch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    .switch {
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .monitor-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 40px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .monitor {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .monitor span {
+      font-size: 1.5em;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Panel de Control IoT</h1>
+
+  <div class="switch-grid">
+    <!-- 9 Switches -->
+    <div class="switch"><label>Luz sala</label><br><input type="checkbox" onchange="toggleSwitch(1)"></div>
+    <div class="switch"><label>Luz cuarto</label><br><input type="checkbox" onchange="toggleSwitch(2)"></div>
+    <div class="switch"><label>Luz baño</label><br><input type="checkbox" onchange="toggleSwitch(3)"></div>
+    <div class="switch"><label>Luz  cocina</label><br><input type="checkbox" onchange="toggleSwitch(4)"></div>
+    <div class="switch"><label>ventilador sala</label><br><input type="checkbox" onchange="toggleSwitch(5)"></div>
+    <div class="switch"><label>ventilador cuarto</label><br><input type="checkbox" onchange="toggleSwitch(6)"></div>
+    <div class="switch"><label>ventilador cocina</label><br><input type="checkbox" onchange="toggleSwitch(7)"></div>
+    <div class="switch"><label>foco</label><br><input type="checkbox" onchange="toggleSwitch(8)"></div>
+    <div class="switch"><label>toma110</label><br><input type="checkbox" onchange="toggleSwitch(9)"></div>
+  </div>
+
+  <div class="monitor-container">
+    <div class="monitor">
+      <h3>Temperatura Sala</h3>
+      <span id="temp_sala">-- °C</span>
+    </div>
+    <div class="monitor">
+      <h3>Temperatura Cuarto</h3>
+      <span id="temp_cuarto">-- °C</span>
+    </div>
+    <div class="monitor">
+      <h3>Temperatura Cocina</h3>
+      <span id="temp_cocina">-- °C</span>
+    </div>
+    <div class="monitor">
+      <h3>Humedad Sala</h3>
+      <span id="hum_sala">-- %</span>
+    </div>
+    <div class="monitor">
+      <h3>Humedad Cuarto</h3>
+      <span id="hum_cuarto">-- %</span>
+    </div>
+    <div class="monitor">
+      <h3>Humedad Cocina</h3>
+      <span id="hum_cocina">-- %</span>
+    </div>
+  </div>
+
+  <script>
+    const esp32IP = "http://192.168.X.X"; // ← Cambia por la IP de tu ESP32
+
+    function toggleSwitch(n) {
+      const state = event.target.checked ? 1 : 0;
+      fetch(`${esp32IP}/toggle?id=${n-1}&state=${state}`)
+        .then(res => res.text())
+        .then(data => console.log("Switch " + n + " actualizado:", data));
+    }
+
+    // Simulación de lectura de sensores
+    setInterval(() => {
+      fetch(`${esp32IP}/sensores`)  // JSON esperado con campos: temp_sala, temp_cuarto, ...
+
